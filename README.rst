@@ -1,5 +1,9 @@
 ===================
-CAMB
+CAMB_omnipotent
+
+This is a patch of the CAMB Boltzmann code implementing the Omnipotent dark energy model (2306.08046), specifically of Eqs.(2,3) of the paper.
+The model parameters are alpha, beta and am; they extend the stardard phenomenology (at the background level only) of the cosmological constant.
+The changes to the original CAMB code are indicated by the "#omni" pr "!omni" key within the appropriate modules.
 ===================
 :CAMB: Code for Anisotropies in the Microwave Background
 :Author: Antony Lewis and Anthony Challinor
