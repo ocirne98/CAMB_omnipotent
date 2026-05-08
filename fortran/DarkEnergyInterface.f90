@@ -27,6 +27,11 @@
         !Type supporting w, wa or general w(z) table
         real(dl) :: w_lam = -1_dl !p/rho for the dark energy (an effective value, used e.g. for halofit)
         real(dl) :: wa = 0._dl !may not be used, just for compatibility with e.g. halofit
+!omni
+        real(dl) :: alpha_exp
+        real(dl) :: beta_exp
+        real(dl) :: am_exp
+!omni
         real(dl) :: cs2_lam = 1_dl !rest-frame sound speed, though may not be used
         logical :: use_tabulated_w = .false.  !Use interpolated table; note this is quite slow.
         logical :: no_perturbations = .false. !Don't change this, no perturbations is unphysical
@@ -190,7 +195,11 @@
     real(dl), intent(IN) :: a
 
     if(.not. this%use_tabulated_w) then
-        TDarkEnergyEqnOfState_w_de= this%w_lam+ this%wa*(1._dl-a)
+!omni
+!        TDarkEnergyEqnOfState_w_de= this%w_lam+ this%wa*(1._dl-a)
+        TDarkEnergyEqnOfState_w_de=-1.d0-((a*(2.d0*this%alpha_exp*(a-this%am_exp)+3.d0*this%beta_exp*(a-this%am_exp)**2.d0))&
+                                    &/(3.d0*(1.d0+this%alpha_exp*(a-this%am_exp)**2.d0+this%beta_exp*(a-this%am_exp)**3.d0)))
+!omni
     else
         al=dlog(a)
         if(al <= this%equation_of_state%Xmin_interp) then
@@ -220,8 +229,12 @@
     real(dl), intent(IN) :: a
 
     if(.not. this%use_tabulated_w) then
-        grho_de = a ** (1._dl - 3. * this%w_lam - 3. * this%wa)
-        if (this%wa/=0) grho_de=grho_de*exp(-3. * this%wa * (1._dl - a))
+!omni
+!        grho_de = a ** (1._dl - 3. * this%w_lam - 3. * this%wa)
+!        if (this%wa/=0) grho_de=grho_de*exp(-3. * this%wa * (1._dl - a))
+        grho_de = a**4.d0 * (1.d0/(1.d0+this%alpha_exp*(1.d0-this%am_exp)**2.d0+this%beta_exp*(1.d0-this%am_exp)**3.d0))&
+                  &*(1.d0+this%alpha_exp*(a-this%am_exp)**2.d0+this%beta_exp*(a-this%am_exp)**3.d0)
+!omni
     else
         if(a == 0.d0)then
             grho_de = 0.d0      !assume rho_de*a^4-->0, when a-->0, OK if w_de always <0.
@@ -263,6 +276,11 @@
     if(.not. this%use_tabulated_w)then
         this%w_lam = Ini%Read_Double('w', -1.d0)
         this%wa = Ini%Read_Double('wa', 0.d0)
+!omni
+        this%alpha_exp = Ini%Read_Double('alpha', 0.d0)
+        this%beta_exp = Ini%Read_Double('beta', 0.d0)
+        this%am_exp = Ini%Read_Double('am', 0.d0)
+!omni
         ! trap dark energy becoming important at high redshift
         ! (will still work if this test is removed in some cases)
         if (this%w_lam + this%wa > 0) &
@@ -280,8 +298,12 @@
     class(TDarkEnergyEqnOfState), intent(inout) :: this
     class(TCAMBdata), intent(in), target :: State
 
+!omni
+!    this%is_cosmological_constant = .not. this%use_tabulated_w .and. &
+!        &  abs(this%w_lam + 1._dl) < 1.e-6_dl .and. this%wa==0._dl
     this%is_cosmological_constant = .not. this%use_tabulated_w .and. &
-        &  abs(this%w_lam + 1._dl) < 1.e-6_dl .and. this%wa==0._dl
+        &  this%beta_exp==0._dl .and. this%alpha_exp==0._dl
+!omni
 
     end subroutine TDarkEnergyEqnOfState_Init
 
