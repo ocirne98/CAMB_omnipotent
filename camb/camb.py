@@ -288,7 +288,10 @@ def set_params_cosmomc(
     if p.get("alpha1", 0) or p.get("Aphiphi", 1) != 1:
         raise ValueError("Parameter not currently supported by set_params_cosmomc")
 
-    pars.set_dark_energy(w=p.get("w", -1), wa=p.get("wa", 0), dark_energy_model=dark_energy_model)
+#omni
+#    pars.set_dark_energy(w=p.get("w", -1), wa=p.get("wa", 0), dark_energy_model=dark_energy_model)
+    pars.set_dark_energy(w=p.get("w", -1), wa=p.get("wa", 0), alpha=p.get("alpha", 0), beta=p.get("beta", 0), am=p.get("am", 1), dark_energy_model=dark_energy_model)
+#omni
     pars.Reion.set_extra_params(deltazrei=p.get("deltazrei", None))
     pars.set_cosmology(
         H0=p["H0"],

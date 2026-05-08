@@ -829,6 +829,11 @@ class CAMBparams(F2003Class):
         w=-1.0,
         cs2=1.0,
         wa=0,
+#omni   
+        alpha=0,
+        beta=0,
+        am=1,
+#omni
         use_tabulated_w=False,
         wde_a_array=None,
         wde_w_array=None,
@@ -849,9 +854,14 @@ class CAMBparams(F2003Class):
         """
 
         de = self.make_class_named(dark_energy_model, DarkEnergyEqnOfState)
+#omni
+#        de.set_params(
+#            w=w, wa=wa, cs2=cs2, use_tabulated_w=use_tabulated_w, wde_a_array=wde_a_array, wde_w_array=wde_w_array
+#        )
         de.set_params(
-            w=w, wa=wa, cs2=cs2, use_tabulated_w=use_tabulated_w, wde_a_array=wde_a_array, wde_w_array=wde_w_array
+            w=w, wa=wa, alpha=alpha, beta=beta, am=am, cs2=cs2, use_tabulated_w=use_tabulated_w, wde_a_array=wde_a_array, wde_w_array=wde_w_array
         )
+#omni
         self.DarkEnergy = de
         return self
 

@@ -28,6 +28,11 @@ class DarkEnergyEqnOfState(DarkEnergyModel):
     _fields_ = (
         ("w", c_double, "w(0)"),
         ("wa", c_double, "-dw/da(0)"),
+#omni
+        ("alpha", c_double, "alpha"),
+        ("beta", c_double, "beta"),
+        ("am", c_double, "am"),
+#omni
         ("cs2", c_double, "fluid rest-frame sound speed squared"),
         ("use_tabulated_w", c_bool, "using an interpolated tabulated w(a) rather than w, wa above"),
         ("__no_perturbations", c_bool, "turn off perturbations (unphysical, so hidden in Python)"),
@@ -35,7 +40,10 @@ class DarkEnergyEqnOfState(DarkEnergyModel):
 
     _methods_ = (("SetWTable", [numpy_1d, numpy_1d, POINTER(c_int)]),)
 
-    def set_params(self, w=-1.0, wa=0, cs2=1.0, use_tabulated_w=False, wde_a_array=None, wde_w_array=None):
+#omni
+#    def set_params(self, w=-1.0, wa=0, cs2=1.0, use_tabulated_w=False, wde_a_array=None, wde_w_array=None):
+    def set_params(self, w=-1.0, wa=0, alpha=0, beta=0, am=1, cs2=1.0, use_tabulated_w=False, wde_a_array=None, wde_w_array=None):
+#omni
         """
          Set the parameters so that P(a)/rho(a) = w(a) = w + (1-a)*wa
 
@@ -54,6 +62,11 @@ class DarkEnergyEqnOfState(DarkEnergyModel):
         else:
             self.w = w
             self.wa = wa
+#omni
+        self.alpha = alpha
+        self.beta = beta
+        self.am = am
+#omni
         self.cs2 = cs2
         self.validate_params()
 
